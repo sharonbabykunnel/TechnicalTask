@@ -6,7 +6,8 @@ import js from '@eslint/js'
 
 const Body = () => {
     const [data, setData] = useState([]);
-    const [showData, setShowData] = useState([])
+    const [showData, setShowData] = useState([]);
+    const [categoryValue, setCategoryValue] = useState('')
 
     useEffect(()=>{
         const fetchData = async ()=>{
@@ -17,17 +18,30 @@ const Body = () => {
         }
         fetchData();
     },[]);
-
+    const setCategory = (value)=>{
+        setCategory(value)
+        let filterdData 
+        if(!value){
+            filterdData = data
+        }else{
+            filterdData = data.filter((item)=> item.category=== value)
+        }
+        setShowData(filterdData)
+    }
     const handleSearch = (value)=>{
-        console.log(value)
-        const filtedData = data.filter( (item)=> item.title.match(value) )
-        console.log(filtedData)
-        setShowData(filtedData)
+        let filterdData;
+        if(!value){
+            filterdData = data
+        }else{
+            filterdData = data.filter( (item)=> item.title.match(value) )
+        }
+        setShowData(filterdData) 
+            
     }
 
   return (
     <div>
-      <Header handleSearch={handleSearch} data={data}/>
+      <Header handleSearch={handleSearch} setCategory={setCategory}/>
       {showData &&
       <Content data={showData}/>
     }
