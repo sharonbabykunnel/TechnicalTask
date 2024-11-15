@@ -8,40 +8,46 @@ const Body = () => {
     const [data, setData] = useState([]);
     const [showData, setShowData] = useState([]);
     const [categoryValue, setCategoryValue] = useState('')
+    const [searchVal, setSearchVal] = useState('');
 
     useEffect(()=>{
         const fetchData = async ()=>{
             const res = await axios.get('https://fakestoreapi.com/products');
-            console.log(res.data,'res');
             setShowData(res.data)
             setData(res.data);
         }
         fetchData();
     },[]);
     const setCategory = (value)=>{
-        setCategory(value)
+        setCategoryValue(value)
         let filterdData 
         if(!value){
             filterdData = data
         }else{
             filterdData = data.filter((item)=> item.category=== value)
         }
+        if(searchVal){
+            filterdData.filter((item)=> item.title.match(searchVal))
+        }
         setShowData(filterdData)
     }
-    const handleSearch = (value)=>{
+    const handleSearch = ()=>{
         let filterdData;
-        if(!value){
-            filterdData = data
-        }else{
-            filterdData = data.filter( (item)=> item.title.match(value) )
-        }
+            if(!searchVal){
+                filterdData = data
+            }else{
+                filterdData = data.filter( (item)=> item.title.match(searchVal) )
+            }
+            if(categoryValue){
+                filterdData.filter((item)=> item.category === categoryValue);
+            }
         setShowData(filterdData) 
             
     }
 
   return (
     <div>
-      <Header handleSearch={handleSearch} setCategory={setCategory}/>
+      <Header handleSearch={handleSearch} setSearchVal={setSearchVal} searchVal={searchVal} setCategory={setCategory}/>
       {showData &&
       <Content data={showData}/>
     }
